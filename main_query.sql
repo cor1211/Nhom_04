@@ -57,6 +57,7 @@ values
 ('Kĩ thuật phần mềm',1),
 ('Kinh tế quốc tế',2),
 ('Kinh doanh quốc tế',2)
+
 drop table Major
 select * from Major
 

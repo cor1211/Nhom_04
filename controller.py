@@ -37,8 +37,9 @@ class AppController:
       # Listener Event
       self.admin_dashboard_view.btn_students.bind('<Button-1>',self.show_student_view)
       self.admin_dashboard_view.btn_result.bind('<Button-1>',self.show_subject_view)
+   
    def show_student_view(self,event):
-      self.clear_frame()
+      # self.clear_frame()
       self.student_view = StudentView(self.root)
       self.student_view.grid(row=0,column=0,sticky='nsew')
       self.student_view.configure(width=400,height=200)
@@ -70,7 +71,7 @@ class AppController:
       self.student_view.combo_major.current(0)
    
    def show_subject_view(self,event):
-      self.clear_frame()
+      # self.clear_frame()
       self.subject_view = SubjectView(self.root)
       self.subject_view.grid(row=0,column=0,sticky='nsew')
       self.subject_view.configure(width=400,height=200)
