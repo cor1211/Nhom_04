@@ -404,6 +404,10 @@ class SubjectView(tk.Frame):
       self.btn_find = tk.Button(self.frame2,text='Tìm kiếm')
       self.btn_find.grid(row=0,column=4,padx=5,pady=5,sticky='w')
       
+      # Button 'Xuat danh sach'
+      self.btn_export = tk.Button(self.frame2,text='Xuất danh sách')
+      self.btn_export.grid(row=0,column=5,padx=5,pady=5,sticky='w')
+      
       # Tên sinh viên
       self.lbl_student_name = tk.Label(self.frame2,text='Tên sinh viên')
       self.lbl_student_name.grid(row=1,column=0,padx=5,pady=5,sticky='w')

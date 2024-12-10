@@ -54,7 +54,7 @@ class AppController:
       self.student_view.student_btn_add.bind('<Button-1>',self.add_student)
       self.student_view.student_btn_update.bind('<Button-1>',self.update_student)
       self.student_view.student_btn_delete.bind('<Button-1>',self.delete_student)
-      self.student_view.btn_export.bind('<Button-1>',self.export_file)
+      self.student_view.btn_export.bind('<Button-1>',self.export_file_student)
       
       
       # Add value combobox_department
@@ -86,6 +86,7 @@ class AppController:
       self.subject_view.btn_add_subject.bind('<Button-1>',self.show_form_subject_add)
       self.subject_view.btn_update_subject.bind('<Button-1>',self.show_form_subject_update)
       self.subject_view.btn_delete_subject.bind('<Button-1>',self.delete_subject_student)
+      self.subject_view.btn_export.bind('<Button-1>',self.export_file_subject)
       self.subject_view.tree.bind('<<TreeviewSelect>>',self.on_selected_subject_student_view)
    
    def show_form_subject_add(self,event):
@@ -442,7 +443,7 @@ class AppController:
       messagebox.showinfo('Thành công', 'Xóa thành công')
       self.get_subject_by_id_semester('<Button-1>')
    
-   def export_file(self,event):
+   def export_file_student(self,event):
       data = []
       # Get data excel from treeview
       for item in self.student_view.tree.get_children():
@@ -483,6 +484,55 @@ class AppController:
             for row in data:
                for cell_data in row:
                   pdf.cell(22,10,str(cell_data),border=1,align='C')
+               pdf.ln(10)
+            
+            # Export
+            pdf.output(file_path)
+            messagebox.showinfo('Thành công','Xuất PDF thành công')
+         else:
+            messagebox.showwarning('Lỗi','Định dạng không phù hợp')
+            
+   def export_file_subject(self,event):
+      data = []
+      # Get data excel from treeview
+      for item in self.subject_view.tree.get_children():
+         value_item = self.subject_view.tree.item(item,'values')
+         data.append(value_item)
+      
+      # Set name columns
+      columns_name = ['STT','Mã học phần','Tên học phần','Học kì','Số tín chỉ','Điểm thường xuyên','Điểm giữa kì','Điểm cuối kì','Điểm trung bình','Xếp loại']
+      
+      # Save file dialog
+      file_path = filedialog.asksaveasfilename(defaultextension='.xlsx',filetypes=[("Excel files", "*.xlsx"), ("PDF files", "*.pdf"), ("All files", "*.*")])
+      
+      if file_path:
+         # Save file
+         _, file_extension = os.path.splitext(file_path)
+         
+         if file_extension == '.xlsx':
+            df = pd.DataFrame(data=data,columns=columns_name)
+            df.to_excel(file_path,index=False)
+            messagebox.showinfo('Thành công','Xuất EXCEL thành công')
+            
+         elif file_extension == '.pdf':
+            pdf = FPDF()
+            pdf.add_page()
+            # Thêm font hỗ trợ Unicode
+            pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+            pdf.set_font("DejaVu", size=10)
+            pdf.cell(0, 10, txt="Danh Sách Học Phần", ln=True, align="C")
+            pdf.ln(10)
+            
+            # Heading
+            pdf.set_font("DejaVu", size=5)
+            for heading in columns_name:
+               pdf.cell(21,10,txt=str(heading),border=1,align='C')
+            pdf.ln(10)
+            
+            # Body
+            for row in data:
+               for cell_data in row:
+                  pdf.cell(21,10,str(cell_data),border=1,align='C')
                pdf.ln(10)
             
             # Export
