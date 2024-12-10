@@ -144,8 +144,8 @@ class StudentView(tk.Frame):
       self.lbl_birth.grid(row=3,column=1,padx=5,pady=5,sticky='w')
       
       # Vấn đề
-      # self.date_birth = DateEntry(self.frame1_1,date_pattern="dd/mm/yyyy")
-      # self.date_birth.grid(row=3,column=2,padx=5,pady=5,sticky='w')
+      self.date_birth = DateEntry(self.frame1_1,date_pattern="dd/mm/yyyy")
+      self.date_birth.grid(row=3,column=2,padx=5,pady=5,sticky='w')
       
       self.lbl_address = tk.Label(self.frame1_1,text='Địa chỉ')
       self.lbl_address.grid(row=4,column=1,padx=5,pady=5,sticky='w')
@@ -279,6 +279,7 @@ class StudentView(tk.Frame):
       
       self.btn_export = tk.Button(self.frame2_1,text='Xuất danh sách')
       self.btn_export.grid(row=0,column=5,padx=5,pady=5,sticky='nsew')
+      
       
       # self.frame2_1.grid_rowconfigure(0,weight=1)
       for i in range(6):

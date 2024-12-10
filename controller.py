@@ -3,6 +3,9 @@ from model import StudentModel
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import filedialog, messagebox
+import pandas as pd
+from fpdf import FPDF
+import os
 
 class AppController:
    def __init__(self,root):
@@ -51,6 +54,8 @@ class AppController:
       self.student_view.student_btn_add.bind('<Button-1>',self.add_student)
       self.student_view.student_btn_update.bind('<Button-1>',self.update_student)
       self.student_view.student_btn_delete.bind('<Button-1>',self.delete_student)
+      self.student_view.btn_export.bind('<Button-1>',self.export_file)
+      
       
       # Add value combobox_department
       department_name = self.student_model.get_department_name()
@@ -437,6 +442,59 @@ class AppController:
       messagebox.showinfo('Thành công', 'Xóa thành công')
       self.get_subject_by_id_semester('<Button-1>')
    
+   def export_file(self,event):
+      data = []
+      # Get data excel from treeview
+      for item in self.student_view.tree.get_children():
+         value_item = self.student_view.tree.item(item,'values')
+         data.append(value_item)
+      
+      # Set name columns
+      columns_name = ['STT','Mã sinh viên','Họ và tên','Giới tính','Ngày sinh','Khóa','Chuyên ngành','Lớp','GPA']
+      
+      # Save file dialog
+      file_path = filedialog.asksaveasfilename(defaultextension='.xlsx',filetypes=[("Excel files", "*.xlsx"), ("PDF files", "*.pdf"), ("All files", "*.*")])
+      
+      if file_path:
+         # Save file
+         _, file_extension = os.path.splitext(file_path)
+         
+         if file_extension == '.xlsx':
+            df = pd.DataFrame(data=data,columns=columns_name)
+            df.to_excel(file_path,index=False)
+            messagebox.showinfo('Thành công','Xuất EXCEL thành công')
+            
+         elif file_extension == '.pdf':
+            pdf = FPDF()
+            pdf.add_page()
+            # Thêm font hỗ trợ Unicode
+            pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+            pdf.set_font("DejaVu", size=10)
+            pdf.cell(0, 10, txt="Danh Sách Sinh Viên", ln=True, align="C")
+            pdf.ln(10)
+            
+            # Heading
+            pdf.set_font("DejaVu", size=6)
+            for heading in columns_name:
+               pdf.cell(22,10,txt=str(heading),border=1,align='C')
+            pdf.ln(10)
+            
+            # Body
+            for row in data:
+               for cell_data in row:
+                  pdf.cell(22,10,str(cell_data),border=1,align='C')
+               pdf.ln(10)
+            
+            # Export
+            pdf.output(file_path)
+            messagebox.showinfo('Thành công','Xuất PDF thành công')
+         else:
+            messagebox.showwarning('Lỗi','Định dạng không phù hợp')
+
+            
+
+
+
    def clear_frame(self):
       for widget in self.root.winfo_children():
          widget.destroy()
