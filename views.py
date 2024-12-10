@@ -50,8 +50,8 @@ class AdminDashboardView(tk.Frame):
       self.btn_thongke = tk.Button(self,text='🎓\nSinh viên',bg='#FFFFFF',relief='solid',width=20,height=10,font= 16)
       self.btn_thongke.grid(row=1,column=0,padx=120,pady=80)
       
-      self.btn_export = tk.Button(self,text='🎓\nSinh viên',bg='#FFFFFF',relief='solid',width=20,height=10,font= 16)
-      self.btn_export.grid(row=1,column=1,padx=120,pady=80)
+      self.btn_logout = tk.Button(self,text='🎓\nĐăng xuất',bg='#FFFFFF',relief='solid',width=20,height=10,font= 16)
+      self.btn_logout.grid(row=1,column=1,padx=120,pady=80)
       
       # Đảm bảo các hàng/cột trong main_frame có thể co giãn
       for i in range(2):  # 2 hàng
@@ -248,6 +248,9 @@ class StudentView(tk.Frame):
       self.student_btn_refresh = tk.Button(self.frame1_3,text='Làm mới',width=15)
       self.student_btn_refresh.grid(row=0,column=3,padx=5,pady=5,sticky='nsew')
       
+      self.student_btn_back = tk.Button(self.frame1_3,text='Quay lại',width=15)
+      self.student_btn_back.grid(row=1,column=0,padx=5,pady=5,sticky='nsew')
+      
    # Widgets in frame2
       self.frame2_1 = tk.Frame(self.frame2)
       self.frame2_1.grid(row=0,column=0,sticky='nsew')
@@ -337,8 +340,8 @@ class SubjectView(tk.Frame):
    def create_widgets(self):
       self.grid_rowconfigure(0,weight=5)
       self.grid_rowconfigure(1,weight=10)
-      self.grid_rowconfigure(2,weight=80)
-      self.grid_rowconfigure(3,weight=5)
+      self.grid_rowconfigure(2,weight=75)
+      self.grid_rowconfigure(3,weight=10)
       self.grid_columnconfigure(0,weight=1)
       # self.grid_columnconfigure(1,weight=25)
       # self.grid_columnconfigure(2,weight=25)
@@ -462,6 +465,9 @@ class SubjectView(tk.Frame):
       
       self.btn_delete_subject = tk.Button(self.frame4,text='Xóa học phần',state='disabled')
       self.btn_delete_subject.grid(row=0,column=2)
+      
+      self.btn_back= tk.Button(self.frame4,text='Quay lại')
+      self.btn_back.grid(row=1,column=0)
       
 class TopLeveSubjectlView(tk.Toplevel):
    def __init__(self,parent):

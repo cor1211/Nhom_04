@@ -21,11 +21,11 @@ class AppController:
       # Model Student
       self.student_model = StudentModel()
       
-      self.show_login_view()
+      self.show_login_view('<Button-1>')
       # self.show_admin_dashboard_view('<Button-1>')
       # self.show_student_view('<Button-1>')
       
-   def show_login_view(self):
+   def show_login_view(self,event):
       self.clear_frame()
       self.login_view = LoginView(self.root)
       self.login_view.grid(row=0,column=0)
@@ -40,6 +40,7 @@ class AppController:
       # Listener Event
       self.admin_dashboard_view.btn_students.bind('<Button-1>',self.show_student_view)
       self.admin_dashboard_view.btn_result.bind('<Button-1>',self.show_subject_view)
+      self.admin_dashboard_view.btn_logout.bind('<Button-1>',self.dashboard_logout)
    
    def show_student_view(self,event):
       # self.clear_frame()
@@ -55,7 +56,8 @@ class AppController:
       self.student_view.student_btn_update.bind('<Button-1>',self.update_student)
       self.student_view.student_btn_delete.bind('<Button-1>',self.delete_student)
       self.student_view.btn_export.bind('<Button-1>',self.export_file_student)
-      
+      self.student_view.student_btn_refresh.bind('<Button-1>',self.refresh_infor)
+      self.student_view.student_btn_back.bind('<Button-1>',self.studentview_back_dashboard)
       
       # Add value combobox_department
       department_name = self.student_model.get_department_name()
@@ -87,6 +89,7 @@ class AppController:
       self.subject_view.btn_update_subject.bind('<Button-1>',self.show_form_subject_update)
       self.subject_view.btn_delete_subject.bind('<Button-1>',self.delete_subject_student)
       self.subject_view.btn_export.bind('<Button-1>',self.export_file_subject)
+      self.subject_view.btn_back.bind('<Button-1>',self.subjectview_back_dashboard)
       self.subject_view.tree.bind('<<TreeviewSelect>>',self.on_selected_subject_student_view)
    
    def show_form_subject_add(self,event):
@@ -541,10 +544,23 @@ class AppController:
          else:
             messagebox.showwarning('Lỗi','Định dạng không phù hợp')
 
-            
+   def refresh_infor(self,event):
+      self.student_view.ent_id.delete(0,tk.END)
+      self.student_view.ent_name.delete(0,tk.END)
+      self.student_view.ent_address.delete(0,tk.END)
+      self.student_view.ent_cccd.delete(0,tk.END)
+      self.student_view.ent_phone.delete(0,tk.END)
+      self.student_view.ent_email.delete(0,tk.END)
+      
+   def studentview_back_dashboard(self,event):
+      self.show_admin_dashboard_view('<Button-1>')
+      
+   def subjectview_back_dashboard(self,event):
+      self.show_admin_dashboard_view('<Button-1>')
 
-
-
+   def dashboard_logout(self,event):
+      self.show_login_view('<Button-1>')
+      
    def clear_frame(self):
       for widget in self.root.winfo_children():
          widget.destroy()
