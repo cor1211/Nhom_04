@@ -163,9 +163,7 @@ class AppController:
          select_item = self.subject_view.tree.selection()[0]
          values = self.subject_view.tree.item(select_item,'values')
          return values
-         
-
-   
+          
    def set_value_by_subject_id(self,event):
       # Subject name
       # print(self.form_subject_view.subject_id.get())
@@ -200,6 +198,7 @@ class AppController:
    def on_select_student_view(self,event):
       # Selection return list id of records selected
       if self.student_view.tree.selection():
+         self.student_view.ent_id.config(state='normal')
          selected_item =self.student_view.tree.selection()[0]
          # print(selected_item)
          # 'values' get value in columns
@@ -264,7 +263,17 @@ class AppController:
          self.photo = ImageTk.PhotoImage(resized_image)
          # Gán ảnh vào canvas
          self.student_view.canvas.create_image(0,0,anchor=tk.NW, image=self.photo)
-
+         
+         self.student_view.student_btn_update.config(state='normal')
+         self.student_view.student_btn_delete.config(state='normal')
+         self.student_view.student_btn_add.config(state='disable')
+         self.student_view.ent_id.config(state='readonly')
+      else:
+         self.student_view.student_btn_update.config(state='disable')
+         self.student_view.student_btn_delete.config(state='disable')
+         self.student_view.student_btn_add.config(state='normal')
+         self.student_view.ent_id.config(state='normal')
+         
    def on_select_image(self,event):
       # Open folder and get path item selected
       self.image_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg;*.jpeg;*.png;*.gif")])
@@ -339,32 +348,47 @@ class AppController:
    def add_student(self,event):
       new_student = []
       # Get value in form
-      student_id = self.student_view.ent_id.get()
-      student_name = self.student_view.ent_name.get()
-      student_birth = self.student_view.date_birth.get()
-      student_address = self.student_view.ent_address.get()
-      student_cccd = self.student_view.ent_cccd.get()
-      student_phone = self.student_view.ent_phone.get()
-      student_email = self.student_view.ent_email.get()
-      student_gender = self.student_view.gender.get()
-      student_department = self.student_view.department.get()
-      student_major = self.student_view.major.get()
-      student_class = self.student_view.classs.get()
-      student_gen= self.student_view.gen.get()
+      student_id = self.student_view.ent_id.get().strip()
+      student_name = self.student_view.ent_name.get().strip()
+      student_birth = self.student_view.date_birth.get().strip()
+      student_address = self.student_view.ent_address.get().strip()
+      student_cccd = self.student_view.ent_cccd.get().strip()
+      student_phone = self.student_view.ent_phone.get().strip()
+      student_email = self.student_view.ent_email.get().strip()
+      student_gender = self.student_view.gender.get().strip()
+      student_department = self.student_view.department.get().strip()
+      student_major = self.student_view.major.get().strip()
+      student_class = self.student_view.classs.get().strip()
+      student_gen= self.student_view.gen.get().strip()
       # Get id
       id_major = self.student_model.get_id_by_name('Major',student_major)
       id_class = self.student_model.get_id_by_name('Class',student_class)
-      # Ask confirm
-      ask_confirm = messagebox.askokcancel('Thêm sinh viên', 'Bạn có muốn thêm sinh viên ?')
-      print(ask_confirm)
-      if ask_confirm: 
-         # New_student
-         new_student.extend([student_id,student_name,self.format_birth(student_birth),student_address,student_cccd,student_phone,student_email,student_gender,student_gen,self.image_path,id_class[0],id_major[0]])
-         # Add student in database
-         self.student_model.add_student(tuple(new_student))
-         messagebox.showinfo('Thêm thành công', 'Thêm thành công')
-         # Display student in treeview
-         self.get_all_students('<Button-1>')  
+      
+      if (student_id and student_name and student_birth and student_address and student_cccd and student_phone and student_email and student_gender and student_department and student_major and student_class and student_gen):
+         check_exists_student= self.student_model.get_student_name_by_id((student_id,))
+         if len(check_exists_student) == 0:
+            check_exists_cccd = self.student_model.get_student_by_cccd((student_cccd,))
+            check_exists_email = self.student_model.get_student_by_email((student_email,))
+            if len(check_exists_cccd) == 0 and len(check_exists_email) == 0:
+               # Ask confirm
+               ask_confirm = messagebox.askokcancel('Thêm sinh viên', 'Bạn có muốn thêm sinh viên ?')
+               print(ask_confirm)
+               if ask_confirm: 
+                  # New_student
+                  new_student.extend([student_id,student_name,self.format_birth(student_birth),student_address,student_cccd,student_phone,student_email,student_gender,student_gen,self.image_path,id_class[0],id_major[0]])
+                  # Add student in database
+                  self.student_model.add_student(tuple(new_student))
+                  messagebox.showinfo('Thêm thành công', 'Thêm thành công')
+                  # Display student in treeview
+                  self.get_all_students('<Button-1>')  
+            elif len(check_exists_cccd) != 0:
+               messagebox.showwarning('Lỗi', 'CCCD đã tồn tại')
+            else:
+               messagebox.showwarning('Lỗi', 'Email đã tồn tại')
+         else:
+            messagebox.showwarning('Lỗi', 'Mã sinh viên đã tồn tại')
+      else:
+         messagebox.showwarning('Lỗi', 'Thông tin không được bỏ trống')
       
    def update_student(self,event):
       student = []
@@ -411,15 +435,25 @@ class AppController:
       
       # Check exists student
       if student_name != 'Không tìm thấy':
-         new_subject_student = (subject_id,student_id,semester,score_regular,score_midterm,score_final)
-         print(new_subject_student)
-         if not self.student_model.get_subject_student((new_subject_student[0],new_subject_student[1],new_subject_student[2])):
-            self.student_model.add_subject_student(new_subject_student)
-            # Xóa hoàn toàn TopLevel
-            self.form_subject_view.destroy()
-            messagebox.showinfo('Thành công', 'Thêm thành công')
-         else:
-            messagebox.showwarning('Lỗi','Thông tin đã tồn tại')
+         try:
+            score_regular = float(score_regular)
+            score_midterm = float(score_midterm)
+            score_final = float(score_final)
+            if score_regular >= 0 and score_regular<=10 and score_midterm>=0 and score_midterm <=10 and score_final>=0 and score_final<=10:
+               new_subject_student = (subject_id,student_id,semester,score_regular,score_midterm,score_final)
+               print(new_subject_student)
+               if not self.student_model.get_subject_student((new_subject_student[0],new_subject_student[1],new_subject_student[2])):
+                  self.student_model.add_subject_student(new_subject_student)
+                  # Xóa hoàn toàn TopLevel
+                  self.form_subject_view.destroy()
+                  messagebox.showinfo('Thành công', 'Thêm thành công')
+                  # self.get_subject_by_id_semester('<Button-1>')
+               else:
+                  messagebox.showwarning('Lỗi','Thông tin đã tồn tại')
+            else:
+               messagebox.showwarning('Lỗi','Điểm không hợp lệ')
+         except:
+            messagebox.showwarning('Lỗi','Điểm không hợp lệ')
          
       else:
          messagebox.showwarning('Lỗi','Mã sinh viên không tồn tại')
@@ -434,11 +468,20 @@ class AppController:
       
       update_ss = (score_regular,score_midterm,score_final,subject_id,student_id,semester)
       print(update_ss)
-      self.student_model.update_subject_student(update_ss)
-      self.form_subject_view.destroy()
-      messagebox.showinfo('Thành công', 'Sửa thành công')
-      self.get_subject_by_id_semester('<Button-1>')
-
+      try:
+         score_regular = float(score_regular)
+         score_midterm = float(score_midterm)
+         score_final = float(score_final)
+         if score_regular >= 0 and score_regular<=10 and score_midterm>=0 and score_midterm <=10 and score_final>=0 and score_final<=10:
+            self.student_model.update_subject_student(update_ss)
+            messagebox.showinfo('Thành công', 'Sửa thành công')
+            self.form_subject_view.destroy()
+            self.get_subject_by_id_semester('<Button-1>')
+         else:
+            messagebox.showwarning('Lỗi','Điểm không hợp lệ')
+      except:
+         messagebox.showwarning('Lỗi','Điểm không hợp lệ')
+         
    def delete_subject_student(self,event):
       student_id = self.subject_view.ent_id.get()
       values_item = self.get_item_on_select_subject_view()

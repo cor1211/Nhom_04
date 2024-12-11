@@ -239,10 +239,10 @@ class StudentView(tk.Frame):
       self.student_btn_add = tk.Button(self.frame1_3,text='Thêm',width=15)
       self.student_btn_add.grid(row=0,column=0,padx=5,pady=5,sticky='nsew')
       
-      self.student_btn_update = tk.Button(self.frame1_3,text='Sửa',width=15)
+      self.student_btn_update = tk.Button(self.frame1_3,text='Sửa',width=15,state='disabled')
       self.student_btn_update.grid(row=0,column=1,padx=5,pady=5,sticky='nsew')
       
-      self.student_btn_delete = tk.Button(self.frame1_3,text='Xóa',width=15)
+      self.student_btn_delete = tk.Button(self.frame1_3,text='Xóa',width=15,state='disabled')
       self.student_btn_delete.grid(row=0,column=2,padx=5,pady=5,sticky='nsew')
       
       self.student_btn_refresh = tk.Button(self.frame1_3,text='Làm mới',width=15)

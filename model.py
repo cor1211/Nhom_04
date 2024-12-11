@@ -82,6 +82,28 @@ class StudentModel:
       cursor.close()
       return student_name
    
+   def get_student_by_cccd(self,tuple_student_cccd):
+      cursor = self.connection.cursor()
+      query = """
+               SELECT student_name
+               FROM Student
+               WHERE student_cccd = %s"""
+      cursor.execute(query,tuple_student_cccd)
+      student = cursor.fetchall()
+      cursor.close()
+      return student
+   
+   def get_student_by_email(self,tuple_student_email):
+      cursor = self.connection.cursor()
+      query = """
+               SELECT student_name
+               FROM Student
+               WHERE student_email = %s"""
+      cursor.execute(query,tuple_student_email)
+      student = cursor.fetchall()
+      cursor.close()
+      return student
+   
    def get_subject_name_credit_by_id(self,tuple_subject_id):
       cursor = self.connection.cursor()
       query = """SELECT subject_name, subject_credit FROM SUBJECT
@@ -163,6 +185,7 @@ class StudentModel:
       return subject
 
    def add_student(self,tuple_student):
+      cursor = self.connection.cursor()
       query = f"""Insert into Student
       values
       {tuple_student}
@@ -170,6 +193,7 @@ class StudentModel:
       print(query)
       self.cursor.execute(query)
       self.connection.commit()
+      cursor.close()
       
    def update_student(self,tuple_student):
       cursor = self.connection.cursor()
