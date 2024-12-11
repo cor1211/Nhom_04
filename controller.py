@@ -58,6 +58,7 @@ class AppController:
       self.student_view.btn_export.bind('<Button-1>',self.export_file_student)
       self.student_view.student_btn_refresh.bind('<Button-1>',self.refresh_infor)
       self.student_view.student_btn_back.bind('<Button-1>',self.studentview_back_dashboard)
+      self.student_view.btn_find.bind('<Button-1>',self.find_student)
       
       # Add value combobox_department
       department_name = self.student_model.get_department_name()
@@ -76,6 +77,44 @@ class AppController:
       major_name = [i[0] for i in major_name]
       self.student_view.combo_major['values'] = major_name
       self.student_view.combo_major.current(0)
+   
+   def find_student(self,event):
+      # Get data
+      find_criteria = self.student_view.find.get()
+      find_data = self.student_view.ent_find.get()
+      
+      # Check criteria
+      if find_criteria == 'Mã sinh viên':
+         find_criteria = "student_id"
+      elif find_criteria == 'Tên sinh viên':
+         find_criteria = "student_name"
+      elif find_criteria == 'Chuyên ngành':
+         find_criteria = "major_name"
+      elif find_criteria == 'Khóa':
+         find_criteria = "student_generation"
+      elif find_criteria == 'Lớp':
+         find_criteria = "class_name"
+      
+      # Query 
+      students = self.student_model.get_all_fields_students(find_criteria,find_data)
+      
+      # Delete item in tree
+      for item in self.student_view.tree.get_children():
+         self.student_view.tree.delete(item)
+         
+      # Format birth Y/D/M -> M/D/Y
+      for i in range(len(students)):
+         students[i] = list(students[i])
+         for j in range(len(students[i])):
+            if j == 3:
+               students[i][j] = self.format_birth(str(students[i][j]))
+      # print(students)
+      # Push value to Tree
+      for i in range(len(students)):
+         self.student_view.tree.insert('',tk.END,values=((i+1,)+tuple(students[i])))
+
+     
+         
    
    def show_subject_view(self,event):
       # self.clear_frame()
@@ -146,7 +185,6 @@ class AppController:
       self.form_subject_view.ent_score_midterm.insert(0,values[5])
       self.form_subject_view.ent_score_final.insert(0,values[6])
       
-   
    def on_selected_subject_student_view(self,event):
       if self.subject_view.tree.selection():
          selected_item = self.subject_view.tree.selection()[0]
@@ -603,6 +641,8 @@ class AppController:
 
    def dashboard_logout(self,event):
       self.show_login_view('<Button-1>')
+      
+   
       
    def clear_frame(self):
       for widget in self.root.winfo_children():

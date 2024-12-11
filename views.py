@@ -268,8 +268,11 @@ class StudentView(tk.Frame):
       self.lbl_find = tk.Label(self.frame2_1,text='Tìm kiếm theo')
       self.lbl_find.grid(row=0,column=0,padx=5,pady=5,sticky='nsew')
       
-      self.menu_find = tk.Entry(self.frame2_1)
-      self.menu_find.grid(row=0,column=1,padx=5,pady=5,sticky='nsew')
+      self.find = tk.StringVar()
+      self.combo_find = ttk.Combobox(self.frame2_1,textvariable=self.find, state='readonly')
+      self.combo_find['values'] = ['Mã sinh viên','Tên sinh viên', 'Chuyên ngành','Khóa','Lớp']
+      self.combo_find.current(0)
+      self.combo_find.grid(row=0,column=1,padx=5,pady=5,sticky='nsew')
       
       self.ent_find = tk.Entry(self.frame2_1)
       self.ent_find.grid(row=0,column=2,padx=5,pady=5,sticky='nsew')

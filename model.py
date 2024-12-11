@@ -40,6 +40,38 @@ class StudentModel:
       students = self.cursor.fetchall()
       return students
    
+   def get_all_fields_students(self,criteria, data):
+      
+      # Select lồng (từ 1 bảng nối)
+      query = f"""select student_data.* from
+      (Select Student.student_id,Student.student_name, 
+      Student.student_gender,Student.student_birth, 
+      Student.student_generation, Major.major_name, 
+      Class.class_name,
+      sum(
+       Case
+      When subject_student.score_regular*0.2 + subject_student.score_midterm *0.3+subject_student.score_final*0.5 >= 8.5 then 4
+      When subject_student.score_regular*0.2 + subject_student.score_midterm *0.3+subject_student.score_final*0.5 >= 8 then 3.5
+      When subject_student.score_regular*0.2 + subject_student.score_midterm *0.3+subject_student.score_final*0.5 >= 7 then 3
+      When subject_student.score_regular*0.2 + subject_student.score_midterm *0.3+subject_student.score_final*0.5 >= 6.5 then 2.5
+      When subject_student.score_regular*0.2 + subject_student.score_midterm *0.3+subject_student.score_final*0.5 >= 5.5 then 2
+      When subject_student.score_regular*0.2 + subject_student.score_midterm *0.3+subject_student.score_final*0.5 >= 5 then 1.5
+      When subject_student.score_regular*0.2 + subject_student.score_midterm *0.3+subject_student.score_final*0.5 >= 4 then 1
+      else 0
+      end * subject.subject_credit)/sum(subject.subject_credit) as gpa
+      from Student
+      Join Major on Student.major_id = Major.major_id
+      Join Class on Student.class_id = Class.class_id
+      LEFT JOIN SUBJECT_STUDENT ON SUBJECT_STUDENT.student_id = Student.student_id
+      LEFT JOIN SUBJECT ON SUBJECT.subject_id = Subject_Student.Subject_id
+      
+      Group by Student.student_id) as student_data
+		Where student_data.{criteria} = "{data}"
+      """
+      self.cursor.execute(query)
+      students = self.cursor.fetchall()
+      return students
+   
    def get_student_by_id(self,student_id):
       query = f"""Select student_id, student_name, student_birth, student_address,
       student_cccd,student_phone, student_email, student_gender,student_generation, 
@@ -52,6 +84,7 @@ class StudentModel:
       self.cursor.execute(query)
       student = self.cursor.fetchall()
       return student[0]
+   
    
    def get_department_name(self):
       query = """Select department_name from Department"""
