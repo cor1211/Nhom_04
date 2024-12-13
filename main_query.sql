@@ -186,6 +186,7 @@ from Student
 left join subject_student on subject_student.student_id = student.student_id
 left join subject on subject.subject_id = subject_student.subject_id
 
+
 Select Student.student_id,Student.student_name, 
       Student.student_gender,Student.student_birth, 
       Student.student_generation, Major.major_name, 
@@ -206,5 +207,4 @@ Select Student.student_id,Student.student_name,
       Join Class on Student.class_id = Class.class_id
       LEFT JOIN SUBJECT_STUDENT ON SUBJECT_STUDENT.student_id = Student.student_id
       LEFT JOIN SUBJECT ON SUBJECT.subject_id = Subject_Student.Subject_id
-      
       Group by Student.student_id

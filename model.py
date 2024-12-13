@@ -12,6 +12,29 @@ class StudentModel:
       )
       self.cursor = self.connection.cursor()
       
+   def get_account(self,tuple_us_pw):
+      cursor = self.connection.cursor()
+      query = """
+      Select * from Account
+      WHERE account_username = %s and
+      account_password = %s;
+      """
+      cursor.execute(query,tuple_us_pw)
+      account = cursor.fetchall()
+      cursor.close()
+      return account
+   
+   def get_account_name_by_account_us(self,tuple_account_name):
+      cursor = self.connection.cursor()
+      query = """
+      Select account_name from Account
+      WHERE account_username = %s;
+      """
+      cursor.execute(query,tuple_account_name)
+      account_name = cursor.fetchall()
+      cursor.close()
+      return account_name
+   
    def get_all_students(self):
       query = """Select Student.student_id,Student.student_name, 
       Student.student_gender,Student.student_birth, 

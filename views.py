@@ -8,6 +8,8 @@ class LoginView(tk.Frame):
       super().__init__(parent)
       self.create_widgets()
       
+      
+      
    def create_widgets(self):
       self.lb_us = tk.Label(self,text='Tên tài khoản:',anchor='w')
       self.lb_us.grid(row=0,column=0,padx=10,pady=10,sticky='w')
@@ -21,8 +23,9 @@ class LoginView(tk.Frame):
       self.ent_pw = tk.Entry(self,width=30,show='*')
       self.ent_pw.grid(row=1,column=1,padx=10,pady=10) 
       
-      self.checkbtn_showpw = tk.Checkbutton(self,text='Hiển thị mật khẩu')
-      self.checkbtn_showpw.grid(row=2,column=1,pady=10)
+      self.show_pw = tk.IntVar(value=0)
+      self.checkbtn_showpw = tk.Checkbutton(self,text='Hiển thị mật khẩu',variable=self.show_pw)
+      self.checkbtn_showpw.grid(row=2,column=1,pady=10,sticky='w')
       
       self.btn_login = tk.Button(self,text='Đăng nhập',width=10,height=2)
       self.btn_login.grid(row=3,column=0,columnspan=2,pady=10)
@@ -41,25 +44,30 @@ class AdminDashboardView(tk.Frame):
       self.create_widgets()
       
    def create_widgets(self):
-      self.btn_students = tk.Button(self,text='🎓\nSinh viên',bg='#FFFFFF',relief='solid',width=20,height=10,font= 16)
-      self.btn_students.grid(row=0,column=0,padx=120,pady=80)
+      self.lbl_welcome = tk.Label(self,font=16)
+      self.lbl_welcome.grid(row=0,column=0,sticky='we',padx=5,pady=5,columnspan=2)
+      self.btn_students = tk.Button(self,text='🎓\nSinh viên',bg='#E7CBCB',relief='solid',width=18,height=9,font= 16)
+      self.btn_students.grid(row=1,column=0,padx=120,pady=80)
       
-      self.btn_result = tk.Button(self,text='🎓\nKết quả học tập',bg='#FFFFFF',relief='solid',width=20,height=10,font= 16)
-      self.btn_result.grid(row=0,column=1,padx=120,pady=80)
+      self.btn_result = tk.Button(self,text='📝\nKết quả học tập',bg='#92DFC8',relief='solid',width=18,height=9,font= 16)
+      self.btn_result.grid(row=1,column=1,padx=120,pady=80)
       
-      self.btn_thongke = tk.Button(self,text='🎓\nSinh viên',bg='#FFFFFF',relief='solid',width=20,height=10,font= 16)
-      self.btn_thongke.grid(row=1,column=0,padx=120,pady=80)
+      # self.btn_thongke = tk.Button(self,text='🎓\nSinh viên',bg='#C8EBF3',relief='solid',width=20,height=10,font= 16)
+      # self.btn_thongke.grid(row=2,column=0,padx=120,pady=80)
       
-      self.btn_logout = tk.Button(self,text='🎓\nĐăng xuất',bg='#FFFFFF',relief='solid',width=20,height=10,font= 16)
-      self.btn_logout.grid(row=1,column=1,padx=120,pady=80)
+      self.btn_logout = tk.Button(self,text='🔓\nĐăng xuất',bg='#C8EBF3',relief='solid',width=18,height=9,font= 16)
+      self.btn_logout.grid(row=2,column=0,padx=120,pady=80)
       
       # Đảm bảo các hàng/cột trong main_frame có thể co giãn
-      for i in range(2):  # 2 hàng
-         self.grid_rowconfigure(i, weight=1)
+      self.grid_rowconfigure(0, weight=10)
+      
+      for i in range(1,3):  # 2 hàng
+         self.grid_rowconfigure(i, weight=45)
 
-      for i in range(2):  # 4 cột
-         self.grid_columnconfigure(i, weight=1)
+      for i in range(2):  # 2 cột
+         self.grid_columnconfigure(i, weight=50)
          
+
 class StudentView(tk.Frame):
    def __init__(self,parent):
       super().__init__(parent)
@@ -68,7 +76,7 @@ class StudentView(tk.Frame):
    def create_widgets(self):
       # self.btn1 = tk.Button(self,text='hihi',bg='red')
       # self.btn1.grid(row=0,column=1)
-      self.frame1 = tk.Frame(self,background='green',borderwidth=3,relief='solid')
+      self.frame1 = tk.Frame(self,bg='#D5F0D4',borderwidth=1.5,relief='solid')
       self.frame1.grid(row=0,column=0,sticky='nsew')
       # Ngăn không cho frame1 mở rộng 
       self.frame1.grid_propagate(False)
@@ -76,7 +84,7 @@ class StudentView(tk.Frame):
       # self.btn = tk.Button(self.frame1,text='xx')
       # self.btn.grid(row=0,column=0)
       
-      self.frame2 = tk.Frame(self,bg='yellow',borderwidth=3,relief='flat')
+      self.frame2 = tk.Frame(self,bg='#83CAFF',borderwidth=1.5,relief='solid')
       self.frame2.grid(row=0,column=2,sticky='nsew')
       # Ngăn không cho frame2 mở rộng 
       self.frame2.grid_propagate(False)
@@ -116,11 +124,6 @@ class StudentView(tk.Frame):
          # Content
 
       # Xử lý ảnh
-      # image_path = r'D:\học\Tài Liệu CNTT\Student Management\static\images\Luu Cong Vinh.jpg'
-      # image = Image.open(image_path)
-      
-      # resized_image = image.resize((140,220))
-      # self.photo = ImageTk.PhotoImage(resized_image)
       self.canvas = tk.Canvas(self.frame1_1,width=140,height=220)
       self.canvas.grid(row=1,column=0, rowspan=6)
       

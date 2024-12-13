@@ -16,7 +16,7 @@ class AppController:
       # Cấu hình khung chính để co giãn
       self.root.grid_rowconfigure(0, weight=1)
       self.root.grid_columnconfigure(0, weight=1)
-      
+      self.root.configure(bg = '#C8EBF3')
       
       # Model Student
       self.student_model = StudentModel()
@@ -29,18 +29,36 @@ class AppController:
       self.clear_frame()
       self.login_view = LoginView(self.root)
       self.login_view.grid(row=0,column=0)
-      self.login_view.configure(width=400,height=200) 
-      self.login_view.btn_login.bind('<Button-1>',self.show_admin_dashboard_view)
+      self.login_view.configure(width=800,height=500)
+      self.login_view.checkbtn_showpw.bind('<Button-1>',self.show_password)
+      self.login_view.btn_login.bind('<Button-1>',self.valid_account)
+      
+   def valid_account(self,event):
+      self.user_name = self.login_view.ent_us.get()
+      password = self.login_view.ent_pw.get()
+      if self.user_name.strip() == '' or password.strip == '':
+         messagebox.showwarning('Lỗi','Dữ liệu không hợp lệ')
+      else:
+         account = self.student_model.get_account((self.user_name,password))
+         if len(account) != 0:
+            self.show_admin_dashboard_view('<Button-1>')
+         else:
+            messagebox.showwarning('Lỗi','Tài khoản hoặc mật khẩu không chính xác')
       
    def show_admin_dashboard_view(self,event):
       self.clear_frame()
       self.admin_dashboard_view = AdminDashboardView(self.root)
+      self.set_welcome(self.user_name)
       self.admin_dashboard_view.grid(row=0,column=0)      
       self.admin_dashboard_view.configure(width=400,height=200)
       # Listener Event
       self.admin_dashboard_view.btn_students.bind('<Button-1>',self.show_student_view)
       self.admin_dashboard_view.btn_result.bind('<Button-1>',self.show_subject_view)
       self.admin_dashboard_view.btn_logout.bind('<Button-1>',self.dashboard_logout)
+         
+   def set_welcome(self,user_name):
+      account_name = self.student_model.get_account_name_by_account_us((user_name,))[0][0]
+      self.admin_dashboard_view.lbl_welcome.config(text=f'Welcome {account_name}')      
    
    def show_student_view(self,event):
       # self.clear_frame()
@@ -78,6 +96,13 @@ class AppController:
       self.student_view.combo_major['values'] = major_name
       self.student_view.combo_major.current(0)
    
+   def show_password(self,event):
+      if self.login_view.show_pw.get():
+         self.login_view.ent_pw.config(show='*')
+      else:
+         self.login_view.ent_pw.config(show='')
+
+         
    def find_student(self,event):
       # Get data
       find_criteria = self.student_view.find.get()
