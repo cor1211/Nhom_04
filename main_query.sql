@@ -208,3 +208,26 @@ Select Student.student_id,Student.student_name,
       LEFT JOIN SUBJECT_STUDENT ON SUBJECT_STUDENT.student_id = Student.student_id
       LEFT JOIN SUBJECT ON SUBJECT.subject_id = Subject_Student.Subject_id
       Group by Student.student_id
+
+-- Tạo bảng tài khoản
+create table if not exists Account(
+	account_id int primary key auto_increment,
+    account_username varchar(30) unique,
+    account_password varchar(50),
+    account_name varchar(50)
+)
+
+insert into Account (account_username, account_password,account_name)
+values
+('vinh01','12112004','Lưu Công Vinh'),
+('vinh02','12112004','Nguyễn Anh Quân')
+
+select * from Account
+
+drop table Account
+
+-- index
+
+explain select * from student where student_name = ""
+CREATE INDEX idx_student_name ON Student(student_name);
+

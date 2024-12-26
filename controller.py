@@ -77,6 +77,16 @@ class AppController:
       self.student_view.student_btn_refresh.bind('<Button-1>',self.refresh_infor)
       self.student_view.student_btn_back.bind('<Button-1>',self.studentview_back_dashboard)
       self.student_view.btn_find.bind('<Button-1>',self.find_student)
+      # Sort heading
+      self.student_view.tree.heading('stt',command=lambda: self.sort_heading(self.student_view.tree,'stt',False))
+      self.student_view.tree.heading('student_id',command=lambda: self.sort_heading(self.student_view.tree,'student_id',False))
+      self.student_view.tree.heading('name',command=lambda: self.sort_heading(self.student_view.tree,'name',False))
+      self.student_view.tree.heading('gender',command=lambda: self.sort_heading(self.student_view.tree,'gender',False))
+      self.student_view.tree.heading('birth',command=lambda: self.sort_heading(self.student_view.tree,'birth',False))
+      self.student_view.tree.heading('generation',command=lambda: self.sort_heading(self.student_view.tree,'generation',False))
+      self.student_view.tree.heading('major',command=lambda: self.sort_heading(self.student_view.tree,'major',False))
+      self.student_view.tree.heading('class',command=lambda: self.sort_heading(self.student_view.tree,'class',False))
+      self.student_view.tree.heading('gpa',command=lambda: self.sort_heading(self.student_view.tree,'gpa',False))
       
       # Add value combobox_department
       department_name = self.student_model.get_department_name()
@@ -139,8 +149,6 @@ class AppController:
          self.student_view.tree.insert('',tk.END,values=((i+1,)+tuple(students[i])))
 
      
-         
-   
    def show_subject_view(self,event):
       # self.clear_frame()
       self.subject_view = SubjectView(self.root)
@@ -155,7 +163,18 @@ class AppController:
       self.subject_view.btn_export.bind('<Button-1>',self.export_file_subject)
       self.subject_view.btn_back.bind('<Button-1>',self.subjectview_back_dashboard)
       self.subject_view.tree.bind('<<TreeviewSelect>>',self.on_selected_subject_student_view)
-   
+      # Sort heading
+      self.subject_view.tree.heading('stt',command=lambda: self.sort_heading(self.subject_view.tree,'stt', False))
+      self.subject_view.tree.heading('subject_id',command=lambda: self.sort_heading(self.subject_view.tree,'subject_id', False))
+      self.subject_view.tree.heading('subject_name',command=lambda: self.sort_heading(self.subject_view.tree,'subject_name', False))
+      self.subject_view.tree.heading('semester',command=lambda: self.sort_heading(self.subject_view.tree,'semester', False))
+      self.subject_view.tree.heading('subject_credit',command=lambda: self.sort_heading(self.subject_view.tree,'subject_credit', False))
+      self.subject_view.tree.heading('score_regular',command=lambda: self.sort_heading(self.subject_view.tree,'score_regular', False))
+      self.subject_view.tree.heading('score_midterm',command=lambda: self.sort_heading(self.subject_view.tree,'score_midterm', False))
+      self.subject_view.tree.heading('score_final',command=lambda: self.sort_heading(self.subject_view.tree,'score_final', False))
+      self.subject_view.tree.heading('score_avarage',command=lambda: self.sort_heading(self.subject_view.tree,'score_avarage', False))
+      self.subject_view.tree.heading('rating',command=lambda: self.sort_heading(self.subject_view.tree,'rating', False))
+      
    def show_form_subject_add(self,event):
       self.form_subject_view = TopLeveSubjectlView(self.subject_view)
       self.form_subject_view.geometry('800x500')
@@ -219,7 +238,7 @@ class AppController:
          print(values)
       else:
          self.subject_view.btn_update_subject.config(state='disable')
-         self.subject_view.btn_delete_subject.config(state='disable')
+         self.subject_view.btn_delete_subject.config(state=tk.DISABLED)
          
    def get_item_on_select_subject_view(self):
       if self.subject_view.tree.selection():
@@ -667,6 +686,17 @@ class AppController:
    def dashboard_logout(self,event):
       self.show_login_view('<Button-1>')
       
+   def sort_heading(self,tree, col, reverse):
+      # Lấy dữ liệu từ treeview và giá trị cột col
+      data = [(tree.set(item, col),item) for item in tree.get_children()]
+      if len(data)!= 0 :
+         # Sắp xếp
+         data.sort(reverse=reverse)
+         # Cập nhật thứ tự
+         for index, (_, item) in enumerate(data):
+            tree.move(item, '', index)
+         # Cập nhật
+         tree.heading(col,command=lambda: self.sort_heading(tree, col, not reverse))
    
       
    def clear_frame(self):

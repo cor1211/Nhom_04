@@ -241,7 +241,7 @@ class StudentView(tk.Frame):
       
       self.student_btn_add = tk.Button(self.frame1_3,text='Thêm',width=15)
       self.student_btn_add.grid(row=0,column=0,padx=5,pady=5,sticky='nsew')
-      
+
       self.student_btn_update = tk.Button(self.frame1_3,text='Sửa',width=15,state='disabled')
       self.student_btn_update.grid(row=0,column=1,padx=5,pady=5,sticky='nsew')
       
@@ -338,7 +338,7 @@ class StudentView(tk.Frame):
       self.scrollbar_x.pack(side="bottom", fill="x")
       self.scrollbar_y.pack(side="right", fill="y")
 
-class SubjectView(tk.Frame):
+class SubjectView(tk.Frame):  
    def __init__(self,parent):
       super().__init__(parent)
       self.create_widgets()
